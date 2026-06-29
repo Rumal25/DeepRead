@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Papers - DeepRead{% endblock %}
+{% block content %}
+    <h2>Paper List</h2>
+    <a href="{% url 'papers:paper_form' %}" class="btn btn-success mb-3">+ Add New Paper</a>
+    <table class="table table-striped">
+        <tr>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Year</th>
+            <th>Status</th>
+            <th>Rating</th>
+            <th></th>
+        </tr>
+        {% for paper in papers %}
+        <tr>
+            <td>{{ paper.title }}</td>
+            <td>{{ paper.authors }}</td>
+            <td>{{ paper.year }}</td>
+            <td>{{ paper.status }}</td>
+            <td>{{ paper.rating }} ⭐</td>
+            <td><a href="{% url 'papers:paper_detail' pk=paper.id %}">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

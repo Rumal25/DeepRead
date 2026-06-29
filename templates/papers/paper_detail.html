@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ paper.title }} - DeepRead{% endblock %}
+{% block content %}
+    <h2>{{ paper.title }}</h2>
+    <p><strong>Authors:</strong> {{ paper.authors }}</p>
+    <p><strong>Year:</strong> {{ paper.year }} | <strong>Venue:</strong> {{ paper.venue }}</p>
+    <p><strong>ArXiv ID:</strong> {{ paper.arxiv_id }}</p>
+    <p><strong>Status:</strong> {{ paper.status }} | <strong>Rating:</strong> {{ paper.rating }} ⭐</p>
+
+    <h4 class="mt-4">Reading Notes</h4>
+    <ul>
+        {% for note in notes %}
+        <li>Page {{ note.page_number }}: {{ note.content }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'papers:paper_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

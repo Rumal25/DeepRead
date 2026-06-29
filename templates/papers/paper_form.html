@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Add Paper - DeepRead{% endblock %}
+{% block content %}
+    <h2>Add New Paper</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label>Title</label>
+            <input type="text" class="form-control" placeholder="Paper title">
+        </div>
+        <div class="mb-3">
+            <label>Authors</label>
+            <input type="text" class="form-control" placeholder="Authors">
+        </div>
+        <div class="mb-3">
+            <label>ArXiv ID</label>
+            <input type="text" class="form-control" placeholder="e.g. 1707.06347">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+{% endblock %}

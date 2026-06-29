@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Home - DeepRead{% endblock %}
+{% block content %}
+    <h2>Welcome to DeepRead</h2>
+    <p>Research Paper Manager for Deep Learning Researchers</p>
+    <a href="{% url 'papers:paper_list' %}" class="btn btn-primary">View Papers</a>
+{% endblock %}
