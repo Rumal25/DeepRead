@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{% if author %}Edit{% else %}Add{% endif %} Author - DeepRead{% endblock %}
+{% block content %}
+<h2>{% if author %}Edit Author{% else %}Add Author{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3"><label class="form-label">First Name</label>{{ form.first_name }}</div>
+    <div class="mb-3"><label class="form-label">Last Name</label>{{ form.last_name }}</div>
+    <div class="mb-3"><label class="form-label">Affiliation</label>{{ form.affiliation }}</div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'papers:author_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

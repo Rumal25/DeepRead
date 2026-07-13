@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Authors - DeepRead{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Authors</h2>
+    <a href="{% url 'papers:author_form' %}" class="btn btn-primary">+ Add Author</a>
+</div>
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr><th>Name</th><th>Affiliation</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for author in authors %}
+        <tr>
+            <td>{{ author }}</td>
+            <td>{{ author.affiliation }}</td>
+            <td><a href="{% url 'papers:author_edit' pk=author.pk %}" class="btn btn-sm btn-warning">Edit</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">No authors yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

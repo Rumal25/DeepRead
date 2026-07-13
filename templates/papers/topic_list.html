@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Topics - DeepRead{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Topics</h2>
+    <a href="{% url 'papers:topic_form' %}" class="btn btn-primary">+ Add Topic</a>
+</div>
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr><th>Name</th><th>Description</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        {% for topic in topics %}
+        <tr>
+            <td>{{ topic.name }}</td>
+            <td>{{ topic.description }}</td>
+            <td><a href="{% url 'papers:topic_edit' pk=topic.pk %}" class="btn btn-sm btn-warning">Edit</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">No topics yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

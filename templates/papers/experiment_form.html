@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Add Experiment - DeepRead{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h2 class="mb-1">🧪 Add Experiment</h2>
+    <p class="mb-0 opacity-75">Paper: {{ paper.title }}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Experiment Title</label>
+                {{ form.title }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Status</label>
+                {{ form.status }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Result Notes</label>
+                {{ form.result_notes }}
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">Save Experiment</button>
+                <a href="{% url 'papers:paper_detail' pk=paper.pk %}"
+                   class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

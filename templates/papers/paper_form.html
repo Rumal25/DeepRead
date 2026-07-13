@@ -1,21 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Add Paper - DeepRead{% endblock %}
+{% block title %}{% if paper %}Edit{% else %}Add{% endif %} Paper - DeepRead{% endblock %}
 {% block content %}
-    <h2>Add New Paper</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label>Title</label>
-            <input type="text" class="form-control" placeholder="Paper title">
+<h2>{% if paper %}Edit Paper{% else %}Add New Paper{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        {{ form.title }}
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Authors</label>
+            {{ form.authors }}
         </div>
-        <div class="mb-3">
-            <label>Authors</label>
-            <input type="text" class="form-control" placeholder="Authors">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Topics</label>
+            {{ form.topics }}
         </div>
-        <div class="mb-3">
-            <label>ArXiv ID</label>
-            <input type="text" class="form-control" placeholder="e.g. 1707.06347">
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </form>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mb-3"><label class="form-label">Year</label>{{ form.year }}</div>
+        <div class="col-md-3 mb-3"><label class="form-label">Venue</label>{{ form.venue }}</div>
+        <div class="col-md-3 mb-3"><label class="form-label">ArXiv ID</label>{{ form.arxiv_id }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mb-3"><label class="form-label">Status</label>{{ form.status }}</div>
+        <div class="col-md-3 mb-3"><label class="form-label">Rating</label>{{ form.rating }}</div>
+    </div>
+    <div class="mb-3"><label class="form-label">Abstract</label>{{ form.abstract }}</div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'papers:paper_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
 {% endblock %}

@@ -1,18 +1,191 @@
 {% extends "base.html" %}
 {% block title %}{{ paper.title }} - DeepRead{% endblock %}
 {% block content %}
-    <h2>{{ paper.title }}</h2>
-    <p><strong>Authors:</strong> {{ paper.authors }}</p>
-    <p><strong>Year:</strong> {{ paper.year }} | <strong>Venue:</strong> {{ paper.venue }}</p>
-    <p><strong>ArXiv ID:</strong> {{ paper.arxiv_id }}</p>
-    <p><strong>Status:</strong> {{ paper.status }} | <strong>Rating:</strong> {{ paper.rating }} ⭐</p>
 
-    <h4 class="mt-4">Reading Notes</h4>
-    <ul>
-        {% for note in notes %}
-        <li>Page {{ note.page_number }}: {{ note.content }}</li>
-        {% endfor %}
-    </ul>
+<div class="page-header d-flex justify-content-between align-items-start">
+    <div>
+        <h2 class="mb-1">{{ paper.title }}</h2>
+        <p class="mb-0 opacity-75">
+            {{ paper.year }}
+            {% if paper.venue %}· {{ paper.venue }}{% endif %}
+            {% if paper.arxiv_id %}· arXiv: {{ paper.arxiv_id }}{% endif %}
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'papers:paper_edit' pk=paper.pk %}"
+           class="btn btn-light btn-sm">✏️ Edit</a>
+        <a href="{% url 'papers:paper_list' %}"
+           class="btn btn-outline-light btn-sm">← Back</a>
+    </div>
+</div>
 
-    <a href="{% url 'papers:paper_list' %}" class="btn btn-secondary">Back to List</a>
+<!-- Info Card -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Authors:</strong>
+                    {% for author in paper.authors.all %}
+                        {{ author }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}—{% endfor %}
+                </p>
+                <p><strong>Status:</strong>
+                    {% if paper.status == 'toread' %}
+                        <span class="badge badge-toread">To Read</span>
+                    {% elif paper.status == 'reading' %}
+                        <span class="badge badge-reading">Reading</span>
+                    {% elif paper.status == 'read' %}
+                        <span class="badge badge-read">Read</span>
+                    {% elif paper.status == 'implemented' %}
+                        <span class="badge badge-implemented">Implemented ✅</span>
+                    {% endif %}
+                </p>
+                <p><strong>Rating:</strong>
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= paper.rating %}⭐{% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Topics:</strong>
+                    {% for topic in paper.topics.all %}
+                    <span class="badge" style="background-color:#3949ab;">{{ topic.name }}</span>
+                    {% empty %}—{% endfor %}
+                </p>
+                {% if paper.abstract %}
+                <p><strong>Abstract:</strong><br>
+                    <small class="text-muted">{{ paper.abstract }}</small>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Reading Notes -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header" style="background-color:#1a237e; color:white;">
+                📝 Reading Notes
+                <a href="{% url 'papers:note_add' paper_pk=paper.pk %}"
+                   class="btn btn-sm btn-light float-end">+ Add</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for note in notes %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge bg-secondary me-1">p.{{ note.page_number }}</span>
+                        {{ note.content }}
+                    </div>
+                    <a href="{% url 'papers:note_delete' pk=note.pk %}"
+                       onclick="return confirm('Delete this note?')"
+                       class="btn btn-sm btn-outline-danger ms-2">✕</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted text-center py-3">
+                    No notes yet. Start reading!
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Experiments -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header" style="background-color:#2e7d32; color:white;">
+                🧪 Experiments
+                <a href="{% url 'papers:experiment_add' paper_pk=paper.pk %}"
+                   class="btn btn-sm btn-light float-end">+ Add</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for exp in experiments %}
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ exp.title }}</strong><br>
+                        <small>
+                        {% if exp.status == 'planned' %}
+                            <span class="badge bg-secondary">Planned</span>
+                        {% elif exp.status == 'running' %}
+                            <span class="badge bg-warning text-dark">Running</span>
+                        {% elif exp.status == 'completed' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% elif exp.status == 'failed' %}
+                            <span class="badge bg-danger">Failed</span>
+                        {% endif %}
+                        {% if exp.result_notes %}
+                            · {{ exp.result_notes|truncatechars:50 }}
+                        {% endif %}
+                        </small>
+                    </div>
+                    <a href="{% url 'papers:experiment_delete' pk=exp.pk %}"
+                       onclick="return confirm('Delete this experiment?')"
+                       class="btn btn-sm btn-outline-danger ms-2">✕</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted text-center py-3">
+                    No experiments yet.
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Citations -->
+<div class="card mt-4">
+    <div class="card-header" style="background-color:#f57c00; color:white;">
+        🔗 Citations
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <strong>This paper cites:</strong>
+                <ul class="mt-2">
+                    {% for c in citations_out %}
+                    <li>
+                        <a href="{% url 'papers:paper_detail' pk=c.cited_paper.pk %}">
+                            {{ c.cited_paper.title }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="text-muted">None recorded yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <strong>Cited by:</strong>
+                <ul class="mt-2">
+                    {% for c in citations_in %}
+                    <li>
+                        <a href="{% url 'papers:paper_detail' pk=c.citing_paper.pk %}">
+                            {{ c.citing_paper.title }}
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li class="text-muted">None recorded yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        {% if all_papers %}
+        <hr>
+        <strong>Add Citation:</strong>
+        <form method="post" class="d-flex gap-2 mt-2">
+            {% csrf_token %}
+            <select name="cited_paper" class="form-select w-auto">
+                {% for p in all_papers %}
+                <option value="{{ p.pk }}">{{ p.title }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-sm btn-warning">
+                + Add Citation
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock %}
